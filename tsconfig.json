@@ -17,10 +17,5 @@
     "types": ["bun-types"]
   },
   "include": ["src", "./test-setup.ts"],
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "tests"
-  ]
 }
 

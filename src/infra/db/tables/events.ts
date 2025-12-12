@@ -17,3 +17,4 @@ export const eventsTable = pgTable("events", {
         return usersTable.id;
     }).notNull()
 })
+

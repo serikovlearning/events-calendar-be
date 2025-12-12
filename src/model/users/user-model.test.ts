@@ -1,6 +1,8 @@
-import { expect, test } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 
-test('default', () => {
-    expect(1 + 2).toEqual(3);
+describe('example', () => {
+    it('Simple', () => {
+        const result = true;
+        expect(result).toBe(true);
+    });
 });
-

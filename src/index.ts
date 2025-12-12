@@ -1,38 +1,31 @@
-import openapi, { fromTypes } from "@elysiajs/openapi";
-import { Elysia } from "elysia";
-import { getDbConnectionTested } from "./model/users/user-model";
-
-
-const users = new Elysia({
-    prefix: "users"
-})
-    .get("/:id", async ({ params: { id } }) => {
-        return {
-            username: "elysia",
-            id
-        }
-    })
-    .get("/search", async ({ query: { name } }) => {
-        return {
-            found: name
-        }
-    })
+import openapi, { fromTypes } from '@elysiajs/openapi';
+import { Effect } from 'effect';
+import { Elysia } from 'elysia';
+import { EventsHandler } from './handlers/get-events';
 
 const app = new Elysia()
     .use(
         openapi({
-            references: fromTypes()
-        })
+            references: fromTypes(),
+        }),
     )
-    .use(users)
-    .get("/", () => {
-        getDbConnectionTested()
-        return "Hello world"
+    .get('/events', async () => {
+        const handler = Effect.gen(function* () {
+            const eventsHandler = yield* EventsHandler;
+            const result = yield* eventsHandler.handleGetEvents;
+            return result;
+        }).pipe(Effect.provide(EventsHandler.Default));
+
+        const result = await Effect.runPromise(handler);
+        return result;
     })
     .get('/insert-users', () => {
-        return "Inserted"
+        return 'Inserted';
     })
     .listen(3000);
+
+// eslint-disable-next-line no-console
 console.log(
-    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    `🦊 Elysia is running at ${app.server?.hostname || ''}:${app.server?.port}`,
 );
